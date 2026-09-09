@@ -1,0 +1,30 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# CMake and compiler output
+/build/
+/build-*/
+/out/
+CMakeUserPresets.json
+compile_commands.json
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exe
+
+# vcpkg dependencies
+/vcpkg_installed/
+
+# Test, coverage, and runtime output
+/Testing/
+/coverage/
+*.log
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
