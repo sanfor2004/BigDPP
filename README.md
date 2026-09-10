@@ -4,7 +4,7 @@ A C++ Discord operations bot for server maintenance, moderation, diagnostics, an
 
 ## Project status
 
-BigDPP is in **Phase 0 — Repository Foundation**. The native CMake, configuration, logging, and testing foundation is implemented; bot features are not implemented yet.
+BigDPP is in **Phase 1 — Discord Foundation**. The native foundation and initial DPP integration are implemented; live Discord verification awaits local credentials.
 
 ## Direction
 
@@ -12,11 +12,19 @@ BigDPP targets C++20, DPP/D++, CMake, PostgreSQL/libpqxx, spdlog, and Docker. It
 
 ## Documentation
 
+- [Start here: codebase tour](docs/codebase-tour.md)
 - [Architecture](docs/architecture.md)
-- [Delivery roadmap](docs/roadmap.md)
 - [Development guide](docs/development.md)
+- [Editing and extension guide](docs/extending.md)
+- [Configuration reference](docs/configuration.md)
+- [Discord application setup](docs/discord-setup.md)
 - [Security and operations baseline](docs/security-and-operations.md)
+- [Delivery roadmap](docs/roadmap.md)
 - [Repository working instructions](AGENTS.md)
+
+If you are new to the project, read the codebase tour first, follow the
+development guide to build and test, then use the editing guide before adding a
+command or module.
 
 ## Implemented
 
@@ -25,12 +33,17 @@ BigDPP targets C++20, DPP/D++, CMake, PostgreSQL/libpqxx, spdlog, and Docker. It
 - spdlog initialization
 - Catch2/CTest configuration tests
 - pinned vcpkg manifest
+- DPP 10.1.5 Gateway adapter using only the standard Guilds intent
+- command registry/router with contained error handling
+- `/ping` and `/status` commands
+- development-guild or global bulk command registration
+- secure ignored `.env` fallback with process-environment precedence
 - project scope, architectural boundaries, phased roadmap, and development/security policies
 
 ## Planned
 
-- remaining Phase 0 container and CI verification
-- Discord connection and basic commands
+- live test-guild verification of Phase 1
+- remaining container and CI verification
 - PostgreSQL persistence and migrations
 - Read-only server diagnostics
 - Moderation, announcements, audit events, and advanced maintenance in later phases
@@ -55,3 +68,12 @@ build\bigdpp.exe
 ```
 
 On the current development machine, Visual Studio's bundled vcpkg root is `C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\vcpkg`.
+
+Before starting the bot, follow the [Discord application setup](docs/discord-setup.md) and put the token in the ignored `.env` file. Never commit the token.
+
+## Commands
+
+| Command | Status | Purpose |
+| --- | --- | --- |
+| `/ping` | Implemented | Verify that BigDPP responds |
+| `/status` | Implemented | Show version, uptime, guild/member cache data, and latency |

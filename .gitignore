@@ -1,30 +1,14 @@
-# Local configuration and secrets
+#Build Directors and output
+/build/
+/out/
+
+#Visual Studio Files
+*.obj
+*.exe
+*.pdb
+*.ilk
+
+#Secrets Files
 .env
 .env.*
 !.env.example
-
-# CMake and compiler output
-/build/
-/build-*/
-/out/
-CMakeUserPresets.json
-compile_commands.json
-*.obj
-*.o
-*.pdb
-*.ilk
-*.exe
-
-# vcpkg dependencies
-/vcpkg_installed/
-
-# Test, coverage, and runtime output
-/Testing/
-/coverage/
-*.log
-
-# Editor and operating-system files
-.idea/
-.vscode/
-.DS_Store
-Thumbs.db

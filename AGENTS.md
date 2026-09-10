@@ -8,7 +8,7 @@ Build BigDPP as a production-oriented, long-running Discord operations bot for a
 
 ## Current phase
 
-The repository is in Phase 0: Repository Foundation. Do not implement moderation, announcements, PostgreSQL persistence, or server diagnostics until the foundation is buildable and the next phase is explicitly started.
+The repository is in Phase 1: Discord Foundation. Do not implement moderation, announcements, PostgreSQL persistence, or server diagnostics until the Discord foundation is buildable and verified.
 
 Before changing code:
 

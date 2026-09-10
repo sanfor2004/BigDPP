@@ -9,7 +9,8 @@
 
 ## Phase 0 — Repository foundation
 
-**Status:** in progress.
+**Status:** native foundation complete; container and CI verification deferred to
+Phase 8 production hardening.
 
 Completed:
 
@@ -21,41 +22,42 @@ Completed:
 - ignore/example/formatting files and planning documentation
 - successful MSVC build, tests, valid-startup smoke test, and invalid-config smoke test
 
-Remaining before Phase 0 closes:
+Deferred hardening work:
 
 - Linux/container build verification and Docker foundation
 - CI for clean Windows/Linux configuration, build, and tests
 - confirm the final supported compiler matrix from CI evidence
 
-Deliverables:
+Outcome:
 
-- target-based CMake project using C++20
-- executable with a minimal composition root
-- configuration loader and startup validation
-- spdlog initialization with secret-safe logging rules
-- vcpkg manifest and reproducible dependency instructions
-- unit-test target and CTest integration
-- `.env.example`, `.gitignore`, formatting configuration, and basic README
-- initial Docker build foundation when a local or CI Docker environment is available
-
-Acceptance criteria:
-
-- a clean checkout can configure and build on supported Windows and Linux environments
-- the executable starts with valid non-secret test configuration
-- missing required configuration fails with a clear message and non-zero exit status
-- unit tests run through `ctest`
-- project code builds with warnings enabled and no introduced warnings
-- no Discord, database, moderation, announcement, or diagnostics behavior is claimed
-
-Decisions to make during implementation:
-
-- select and record a vcpkg baseline after testing DPP/spdlog/test package compatibility
-- choose the exact minimum CMake version supported by local tools and CI
-- decide whether Phase 0 links DPP immediately or defers it to Phase 1; prefer deferral unless linking it proves the dependency toolchain
+- the native Windows project configures and builds through the pinned vcpkg
+  manifest
+- configuration failures are reported clearly with a non-zero exit status
+- unit tests run through CTest with project warnings enabled
+- CMake 3.25 is the current minimum and DPP was introduced in Phase 1
+- clean Linux/container and CI evidence remain explicitly unverified
 
 ## Phase 1 — Discord foundation
 
-**Status:** planned.
+**Status:** implemented locally; awaiting live test-guild verification.
+
+Completed locally:
+
+- DPP 10.1.5 cluster adapter using only the standard Guilds intent
+- ready and DPP log handlers
+- command registry/router with exception containment
+- development-guild or global bulk registration
+- `/ping` and `/status`
+- DPP-free status formatting and tests
+- ignored `.env` loading with process-environment precedence
+- missing-token and development-guild-ID validation
+
+Remaining verification:
+
+- connect with the owner's test application token
+- register commands in the configured test guild
+- exercise `/ping` and `/status` through Discord
+- observe reconnect behavior before production use
 
 Deliverables:
 
@@ -162,7 +164,9 @@ Before enabling BigDPP on the approximately 450-member server:
 
 ## Recommended next slice
 
-Implement Phase 0 as two small changes:
+Complete Phase 1 live verification in a dedicated test guild:
 
-1. CMake executable, config validation, spdlog, unit-test/CTest foundation, ignore/example files, and local build verification.
-2. Container build foundation and CI only after the native build is stable.
+1. Start the bot with a test application token and `DEVELOPMENT_GUILD_ID`.
+2. Confirm registration and exercise `/ping` and `/status` through Discord.
+3. Observe disconnect/reconnect behavior and record the result before starting
+   Phase 2.

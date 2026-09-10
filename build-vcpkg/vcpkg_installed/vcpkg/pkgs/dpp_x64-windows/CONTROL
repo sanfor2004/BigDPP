@@ -1,0 +1,7 @@
+Package: dpp
+Version: 10.1.5
+Depends: nlohmann-json, openssl, opus, vcpkg-cmake, vcpkg-cmake-config, zlib
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 79d48e6c3a39adb582aee7a498b743b918084998a022daa953dc7127cfc5406a
+Description: D++ Extremely Lightweight C++ Discord Library.
