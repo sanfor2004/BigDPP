@@ -1,0 +1,54 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows-debug",
+      "displayName": "Windows x64 Debug (vcpkg)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VCPKG_ROOT}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": {
+          "type": "FILEPATH",
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        },
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-debug",
+      "configurePreset": "windows-debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-debug",
+      "configurePreset": "windows-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

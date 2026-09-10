@@ -1,6 +1,10 @@
 #Build Directors and output
 /build/
+/build-*/
 /out/
+/CMakeUserPresets.json
+/.vs/
+/.vscode/settings.json
 
 #Visual Studio Files
 *.obj

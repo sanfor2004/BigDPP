@@ -1,3 +1,0 @@
-C:/www/BigDPP/build-vcpkg/CMakeFiles/bigdpp.dir
-C:/www/BigDPP/build-vcpkg/CMakeFiles/ALL_BUILD.dir
-C:/www/BigDPP/build-vcpkg/CMakeFiles/ZERO_CHECK.dir

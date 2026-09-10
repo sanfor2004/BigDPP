@@ -56,14 +56,13 @@ supplied is a successful availability check.
 
 ## Configure
 
-Set `VCPKG_ROOT` to the vcpkg installation, then configure an out-of-source
-Debug build:
+Set `VCPKG_ROOT` to the vcpkg installation. The checked-in
+`CMakePresets.json` passes its toolchain file to CMake, which is required for
+manifest dependencies such as DPP to be discoverable:
 
 ```powershell
 $env:VCPKG_ROOT = "C:\path\to\vcpkg"
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug `
-  "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
-  -DVCPKG_TARGET_TRIPLET=x64-windows
+cmake --preset windows-debug
 ```
 
 On the currently verified workstation, Visual Studio's bundled vcpkg root is:
@@ -75,6 +74,13 @@ C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\vcpkg
 That machine-specific path is documentation only and must not be embedded in
 CMake files. The first configure may take time because vcpkg builds the manifest
 dependencies.
+
+When opening the repository directly in Visual Studio, define `VCPKG_ROOT`
+before launching Visual Studio, reopen the folder, and select
+`Windows x64 Debug (vcpkg)` as the configure preset. If Visual Studio previously
+configured its generated `x64-Debug` profile, use **Project > Delete Cache and
+Reconfigure** after selecting the preset. The generated profile does not pass
+the vcpkg toolchain and therefore cannot resolve `find_package(dpp)`.
 
 Useful configuration options:
 
@@ -91,14 +97,14 @@ incompatible CMake cache.
 ## Build
 
 ```powershell
-cmake --build build
+cmake --build --preset windows-debug
 ```
 
 Build only one target when useful:
 
 ```powershell
-cmake --build build --target bigdpp_tests
-cmake --build build --target bigdpp
+cmake --build --preset windows-debug --target bigdpp_tests
+cmake --build --preset windows-debug --target bigdpp
 ```
 
 Project targets compile with `/W4 /permissive-` on MSVC and
@@ -110,19 +116,19 @@ change before handing it off.
 Run the full default offline suite:
 
 ```powershell
-ctest --test-dir build --output-on-failure
+ctest --preset windows-debug
 ```
 
 List discovered tests without running them:
 
 ```powershell
-ctest --test-dir build -N
+ctest --test-dir out/build/windows-debug -N
 ```
 
 Run matching tests:
 
 ```powershell
-ctest --test-dir build -R configuration --output-on-failure
+ctest --test-dir out/build/windows-debug -R configuration --output-on-failure
 ```
 
 Catch2 registers each `TEST_CASE` as an individual CTest test. The current suite
@@ -152,7 +158,7 @@ history.
 Run from the repository root so the executable reads `./.env`:
 
 ```powershell
-.\build\bigdpp.exe
+.\out\build\windows-debug\bigdpp.exe
 ```
 
 Expected successful startup includes logs for initialization, Gateway startup,

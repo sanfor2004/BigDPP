@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/www/BigDPP/build-vcpkg/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
