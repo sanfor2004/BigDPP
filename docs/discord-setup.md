@@ -16,6 +16,12 @@ DISCORD_TOKEN=paste-token-here
 
 Never paste the token into source code, documentation, chat, screenshots, Git commits, or logs. Reset it immediately if it is exposed.
 
+From the repository root, create the local file from the safe template:
+
+```powershell
+Copy-Item .env.example .env
+```
+
 ## 2. Configure installation
 
 BigDPP is a server-operations bot, so use the **Guild Install** context.

@@ -1,9 +1,9 @@
 # Configuration Reference
 
-BigDPP reads configuration once during startup. For local development it reads
-`.env` from the process working directory; real environment variables take
-precedence over `.env` values. Run the executable from the repository root when
-you rely on the local file.
+BigDPP reads the Discord token once during startup. A non-empty process
+environment variable takes precedence; otherwise the executable reads
+`DISCORD_TOKEN` from `.env` in the process working directory. Run the executable
+from the repository root when you rely on the local file.
 
 ## Variables
 
@@ -35,11 +35,11 @@ template. Confirm with `git status` before committing.
 
 ## Precedence and empty values
 
-For each setting, BigDPP uses this order:
+For the Discord token, BigDPP uses this order:
 
 1. a non-empty process environment variable
 2. a non-empty value in `.env`
-3. the code default, when one exists
+3. no value; startup fails safely
 
 An empty process value does not mask a non-empty `.env` value. Empty optional
 values are treated as absent.

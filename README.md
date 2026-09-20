@@ -69,7 +69,7 @@ build\bigdpp.exe
 
 On the current development machine, Visual Studio's bundled vcpkg root is `C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\vcpkg`.
 
-Before starting the bot, follow the [Discord application setup](docs/discord-setup.md) and put the token in the ignored `.env` file. Never commit the token.
+Before starting the bot, copy `.env.example` to the ignored `.env` file and put the token there. Never commit the token.
 
 ## Commands
 
