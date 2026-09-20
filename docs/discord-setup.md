@@ -72,7 +72,7 @@ After building, run from the repository root so BigDPP can locate `.env`:
 Successful startup logs Gateway connection progress, the ready event, and command-registration outcome. Test:
 
 - `/ping` — returns `Pong!`
-- `/status` — reports version, uptime, guild/member cache information, and Gateway latency
+- `/status` — reports the bot's online identity
 
 Stop the process with `Ctrl+C`. Graceful signal handling will be strengthened during production hardening.
 

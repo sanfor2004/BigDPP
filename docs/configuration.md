@@ -11,9 +11,6 @@ from the repository root when you rely on the local file.
 | --- | --- | --- | --- |
 | `DISCORD_TOKEN` | Yes, when starting the bot | none | Authenticates the DPP cluster. Never log or commit it. |
 | `DEVELOPMENT_GUILD_ID` | No | none | Registers slash commands in one test guild instead of globally. Must be a non-zero decimal Discord snowflake. |
-| `LOG_LEVEL` | No | `info` | spdlog threshold: `trace`, `debug`, `info`, `warn`, `error`, `critical`, or `off`. Input is normalized to lowercase. |
-| `ENVIRONMENT` | No | `development` | Non-empty deployment label written to the startup log. It does not currently switch behavior. |
-| `DATABASE_URL` | No; reserved for Phase 2 | none | Loaded into configuration but not consumed by the current application. |
 
 Copy the example rather than creating a new format:
 
@@ -26,8 +23,6 @@ Then populate only local values:
 ```dotenv
 DISCORD_TOKEN=replace-with-local-test-token
 DEVELOPMENT_GUILD_ID=123456789012345678
-LOG_LEVEL=debug
-ENVIRONMENT=development
 ```
 
 `.env` and `.env.*` are ignored by Git, except for the safe `.env.example`
@@ -50,15 +45,13 @@ Supported:
 
 ```dotenv
 # full-line comment
-LOG_LEVEL = INFO
-ENVIRONMENT="local development"
 DISCORD_TOKEN='quoted-token'
+DEVELOPMENT_GUILD_ID=123456789012345678
 ```
 
 Not supported:
 
 ```dotenv
-export LOG_LEVEL=debug
 NAME=${OTHER_NAME}
 MULTILINE="first
 second"
@@ -69,11 +62,9 @@ inside those quotes is used literally; escape processing is not performed.
 
 ## Validation and failure behavior
 
-Malformed dotenv entries, invalid keys, unterminated quotes, unsupported log
-levels, empty environment names, and invalid development guild IDs produce a
-`ConfigError`. A missing Discord token produces a `ConfigError` when the Discord
-bot is constructed. `main()` catches these failures, logs a short critical
-message, and exits with status `1`.
+An invalid `DEVELOPMENT_GUILD_ID` or a missing Discord token produces a startup
+error. `main()` catches startup failures, writes a short message, and exits with
+status `1`.
 
 ## Production guidance
 

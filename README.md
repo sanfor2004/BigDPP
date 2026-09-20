@@ -30,11 +30,8 @@ command or module.
 
 - C++20 CMake executable and reusable core target
 - environment-backed configuration with validation
-- spdlog initialization
-- Catch2/CTest configuration tests
 - pinned vcpkg manifest
 - DPP 10.1.5 Gateway adapter using only the standard Guilds intent
-- command registry/router with contained error handling
 - `/ping` and `/status` commands
 - development-guild or global bulk command registration
 - secure ignored `.env` fallback with process-environment precedence
@@ -76,4 +73,4 @@ Before starting the bot, copy `.env.example` to the ignored `.env` file and put 
 | Command | Status | Purpose |
 | --- | --- | --- |
 | `/ping` | Implemented | Verify that BigDPP responds |
-| `/status` | Implemented | Show version, uptime, guild/member cache data, and latency |
+| `/status` | Implemented | Show the bot's online identity |
