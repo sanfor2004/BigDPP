@@ -35,11 +35,16 @@ Enable it with `BIGDPP_LLM_ENABLED=true`, download the selected model with
 starts `ollama serve` automatically. See the [configuration reference](docs/configuration.md)
 for all LLM settings.
 
+![BigDPP local AI Discord example](branding/ai-screenshot.png)
+
+Example `/ask` response from the local Discord assistant.
+
 ## Branding
 
 - `branding/github-social-preview.png` — GitHub repository social preview, 1774×887
 - `branding/Banner.png` — original project banner
 - `branding/Logo.png` — project logo
+- `branding/ai-screenshot.png` — local AI Discord example
 
 ## Documentation
 
