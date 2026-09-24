@@ -2,7 +2,7 @@
 
 ## Deployment posture
 
-BigDPP will operate on a real Discord server, so development defaults must be conservative. The initial production rollout is read-only diagnostics. Mutating moderation and maintenance features remain disabled until tested in a separate guild and explicitly enabled.
+BigDPP will operate on a real Discord server, so development defaults must be conservative. The current local build exposes explicit administrative slash commands, but live verification and production enablement must happen in a separate test guild first.
 
 ## Secrets
 
@@ -12,6 +12,11 @@ BigDPP will operate on a real Discord server, so development defaults must be co
 - Redact tokens, database credentials, authorization headers, and signed URLs.
 - Use separate Discord credentials and databases for development and production.
 - Rotate a token immediately if it enters Git history or logs.
+
+The optional local AI integration is also loopback-only. `/ask` sends only the
+member's bounded question to Ollama, gives the model no Discord credentials or
+tools, and disables generated Discord mentions. The command is open to members
+of the dedicated AI channel; it does not grant any administrative capability.
 
 ## Discord authorization
 
@@ -25,15 +30,25 @@ Discord command visibility is not an authorization boundary. Each administrative
 
 State can change between validation and execution. Handle Discord rejection safely and record an audit outcome; do not report success before the API operation succeeds.
 
-BigDPP should not request Administrator. Document each requested permission and the feature that needs it. Privileged intents must be enabled only when an implemented feature requires them.
+BigDPP should not request Administrator. The active administrator command
+surface authorizes only the current guild owner or a member whose Discord base
+permissions include Administrator. Every action checks the bot permission it
+needs, validates cached guild/target state, and re-checks role hierarchy.
+Privileged intents must be enabled only when an implemented feature requires
+them; Server Members is currently required for hierarchy checks.
 
 ## Dangerous operations
 
-- Maintenance scans produce findings only.
-- A future guided fix must show the exact proposed action, require explicit confirmation, and re-check preconditions immediately before execution.
-- Bound bulk operations such as purge, role changes, and announcements.
+- `/server-setup` is additive: it creates missing baseline items and never deletes, renames, or overwrites existing items.
+- Destructive commands show a preview and require explicit `confirm:true`; inputs are bounded, including purge at 100 messages and timeouts at 40320 minutes.
+- Bound bulk operations such as purge; no natural-language server-control path is exposed.
 - Disable mass mentions unless an authorized announcement explicitly requests a permitted role/everyone mention.
-- Preserve an immutable moderation/audit record when policy requires it.
+- Record administrative outcomes in the process log and in `#mod-log` when that channel exists. Durable PostgreSQL audit history remains planned.
+
+Validation failures are returned ephemerally. Mutations that require a Discord
+callback are deferred and completed asynchronously; their successful result is
+not necessarily ephemeral. See the [command reference](commands.md) for the
+current operation-by-operation confirmation rules.
 
 ## Database
 
@@ -57,7 +72,7 @@ BigDPP should not request Administrator. Document each requested permission and 
 - test guild validation complete
 - least-privilege bot role and correct hierarchy verified
 - required intents documented and enabled
-- read-only feature set selected
+- administrative command set reviewed and tested in a dedicated guild
 - audit channel access restricted
 - application log destination and retention configured
 - PostgreSQL backup and restore procedure tested when Phase 2 begins

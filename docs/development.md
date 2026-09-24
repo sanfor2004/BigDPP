@@ -24,11 +24,13 @@ vcpkg baseline.
 | Dependency | Current purpose | CMake target |
 | --- | --- | --- |
 | DPP / D++ 10.1.5 at the verified local baseline | Discord Gateway and REST API | `dpp::dpp` |
-| spdlog | application and DPP logging | `spdlog::spdlog` |
-| Catch2 3 | offline unit tests and CTest discovery | `Catch2::Catch2WithMain` |
+| nlohmann-json | Ollama request/response JSON encoding and parsing | `nlohmann_json::nlohmann_json` |
+
+The local LLM integration uses DPP's existing asynchronous HTTP queue and
+Ollama's loopback HTTP API; it adds no native HTTP dependency.
 
 libpqxx is planned for Phase 2 and is not currently declared. Do not add Redis.
-See [Editing and Extension Guide](extending.md#add-a-library-dependency) before
+See [Editing and Extension Guide](extending.md#add-a-native-dependency) before
 introducing another package.
 
 ## Windows prerequisites
@@ -65,15 +67,9 @@ $env:VCPKG_ROOT = "C:\path\to\vcpkg"
 cmake --preset windows-debug
 ```
 
-On the currently verified workstation, Visual Studio's bundled vcpkg root is:
-
-```text
-C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\vcpkg
-```
-
-That machine-specific path is documentation only and must not be embedded in
-CMake files. The first configure may take time because vcpkg builds the manifest
-dependencies.
+Use the vcpkg root installed on the current machine; do not copy a
+machine-specific path into the repository. The first configure may take time
+because vcpkg builds the manifest dependencies.
 
 When opening the repository directly in Visual Studio, define `VCPKG_ROOT`
 before launching Visual Studio, reopen the folder, and select
@@ -86,7 +82,6 @@ Useful configuration options:
 
 | Option | Default | Effect |
 | --- | --- | --- |
-| `BIGDPP_BUILD_TESTS` | `ON` | Builds `bigdpp_tests`, finds Catch2, and registers tests with CTest. |
 | `CMAKE_BUILD_TYPE` | generator-dependent | Use `Debug` for development or `Release` for an optimized single-config build. |
 | `VCPKG_TARGET_TRIPLET` | environment-dependent | Selects the dependency ABI, such as `x64-windows`. |
 
@@ -104,6 +99,7 @@ Build only one target when useful:
 
 ```powershell
 cmake --build --preset windows-debug --target bigdpp_tests
+cmake --build --preset windows-debug --target bigdpp_admin_tests
 cmake --build --preset windows-debug --target bigdpp
 ```
 
@@ -128,12 +124,12 @@ ctest --test-dir out/build/windows-debug -N
 Run matching tests:
 
 ```powershell
-ctest --test-dir out/build/windows-debug -R configuration --output-on-failure
+ctest --test-dir out/build/windows-debug -R "configuration|administration" --output-on-failure
 ```
 
-Catch2 registers each `TEST_CASE` as an individual CTest test. The current suite
-tests configuration and DPP-free status formatting. It requires no token,
-network, Discord server, or PostgreSQL instance.
+The current CTest suite runs two native tests, `bigdpp_configuration` and
+`bigdpp_administration`. They require no token, network, Discord server, or
+PostgreSQL instance.
 
 Networked integration and live Discord smoke tests must remain opt-in and must
 not be added to the default unit-test command.
@@ -155,7 +151,7 @@ history.
 
 ## Run
 
-Run from the repository root so the executable reads `./.env`:
+Run from the repository root so the executable can discover `./.env`:
 
 ```powershell
 .\out\build\windows-debug\bigdpp.exe
@@ -168,7 +164,7 @@ hardening item.
 
 Do not use production credentials for routine development. Follow the manual
 checks in [Discord Application Setup](discord-setup.md) for `/ping` and
-`/status`.
+`/status`, and `/ask` when Ollama is enabled.
 
 ## Everyday edit loop
 
@@ -180,8 +176,9 @@ checks in [Discord Application Setup](discord-setup.md) for `/ping` and
 6. Review the diff for secrets, generated files, unrelated changes, and stale
    implemented/planned claims.
 
-Formatting is defined by `.clang-format`. Use a compatible `clang-format` on
-changed C++ files when available; do not mechanically reformat unrelated code.
+No repository `.clang-format` file is currently checked in. Use a compatible
+`clang-format` on changed C++ files when available, following the surrounding
+tab-based style; do not mechanically reformat unrelated code.
 
 ## Build-tree policy
 

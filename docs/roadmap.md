@@ -3,7 +3,7 @@
 ## Planning principles
 
 - Deliver the smallest production-shaped vertical slice in each phase.
-- Keep the bot deployable and diagnostics read-only before enabling administrative mutations.
+- Keep server mutations explicit, bounded, audited, and separately verified before production enablement.
 - A phase is complete only when its acceptance criteria pass and its documentation matches reality.
 - Planned items are not advertised as implemented.
 
@@ -16,9 +16,8 @@ Completed:
 
 - C++20 target-based CMake executable and core library
 - validated environment configuration foundation
-- spdlog initialization
 - pinned vcpkg manifest
-- Catch2/CTest unit-test foundation
+- CTest configuration-test foundation
 - ignore/example/formatting files and planning documentation
 - successful MSVC build, tests, valid-startup smoke test, and invalid-config smoke test
 
@@ -43,20 +42,30 @@ Outcome:
 
 Completed locally:
 
-- DPP 10.1.5 cluster adapter using only the standard Guilds intent
+- DPP 10.1.5 cluster adapter using the Guilds and Guild Members intents
 - ready and DPP log handlers
-- command registry/router with exception containment
+- slash-command definitions and dispatch with exception containment
 - development-guild or global bulk registration
 - `/ping` and `/status`
-- DPP-free status formatting and tests
+- configuration and administrator-command tests without a live Discord connection
 - ignored `.env` loading with process-environment precedence
 - missing-token and development-guild-ID validation
+- optional local Ollama adapter for `/ask`
+- automatic AI text-channel discovery/creation and channel gating for `/ask`
+- explicit owner/Discord Administrator command authorization with bot permission and role-hierarchy checks
+- additive `/server-setup confirm:true` for baseline categories, channels, roles, and restricted `#mod-log`
+- server, channel, role, member, bounded purge, and audit-log command groups
+- preview plus `confirm:true` for destructive actions and process/`#mod-log` audit outcomes
 
 Remaining verification:
 
 - connect with the owner's test application token
 - register commands in the configured test guild
 - exercise `/ping` and `/status` through Discord
+- exercise `/ask` through the configured local model and verify the AI channel
+- verify the channel is created or reused with the expected permission
+- run the administrator command groups in the test guild and verify unauthorized members are denied
+- verify destructive previews, confirmation, bot permissions, target hierarchy, and audit outcomes
 - observe reconnect behavior before production use
 
 Deliverables:
@@ -65,8 +74,10 @@ Deliverables:
 - required-intents configuration
 - ready handler
 - slash-command definition/registration strategy
-- command registry/router
+- slash-command definitions and dispatch
 - `/ping` and `/status`
+- `/ask question:<text>` in the configured AI channel
+- explicit administrator command surface isolated in `AdminService`
 - startup, connection, command, and failure logging
 
 Acceptance criteria:
@@ -74,8 +85,8 @@ Acceptance criteria:
 - the bot connects using an environment token without logging it
 - command registration is deterministic and documented for development versus production guilds
 - `/ping` and `/status` respond within Discord interaction constraints
-- `/status` reports only actually available version, uptime, guild/member, and latency data
-- handler/service behavior is unit-tested without a live Discord connection
+- `/status` reports the bot identity currently available to the command
+- configuration and administrator-command behavior is tested without a live Discord connection
 - a callback failure is contained and produces a safe response/log entry
 
 ## Phase 2 — PostgreSQL foundation
@@ -120,9 +131,13 @@ Acceptance criteria:
 
 ## Phase 4 — Moderation foundation
 
-**Status:** planned.
+**Status:** command surface implemented locally; durable records and live verification remain.
 
-Deliver warnings, timeout/untimeout, purge, and lock/unlock before expanding to kick/ban. Every operation uses a shared authorization pipeline: caller permission, bot permission, hierarchy, target, execution, persistence, audit, response.
+The Phase 1 administrator service delivers warnings, timeout/untimeout, purge,
+lock/unlock, kick/ban, role operations, and channel operations through a shared
+authorization pipeline: caller permission, bot permission, hierarchy, target,
+execution, audit, and response. PostgreSQL persistence, durable warning
+history, and the broader diagnostic rules remain in this phase.
 
 Acceptance criteria include atomic/consistent action recording, explicit partial-failure handling, audit messages, reason validation, bounded purge behavior, and test coverage for authorization decisions.
 
@@ -156,7 +171,7 @@ Before enabling BigDPP on the approximately 450-member server:
 
 1. Use a test guild for command and permission validation.
 2. Request the minimum intents and permissions.
-3. Deploy read-only commands first.
+3. Deploy foundation and administrator commands first in a test guild.
 4. Configure application logs and a restricted audit channel.
 5. Verify restart/reconnect behavior.
 6. Back up relevant configuration before enabling mutations.

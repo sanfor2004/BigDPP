@@ -6,7 +6,7 @@
 int main() {
 	try {
 		const bigdpp::Config config = bigdpp::Config::load();
-		bigdpp::Bot bot{config.discord_token, config.development_guild_id};
+		bigdpp::Bot bot{config.discord_token, config.development_guild_id, config.local_llm};
 		bot.run();
 	} catch (const std::exception& error) {
 		std::cerr << "BigDPP failed: " << error.what() << "\n";
